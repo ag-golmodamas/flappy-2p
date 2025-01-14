@@ -31,8 +31,6 @@ def isGameOver(horizontal, vertical, up_pipes, down_pipes):
     """Check game over conditions."""
     if vertical > elevation - 25 or vertical < 0:  # Bird hits top or bottom
         return True
-    if horizontal <= 0 or horizontal + game_images['flappybird'].get_width() >= window_width:  # Bird hits walls
-        return True
     for pipe in up_pipes:
         if (vertical < game_images['pipeimage'][0].get_height() + pipe['y'] and
                 abs(horizontal - pipe['x']) < game_images['pipeimage'][0].get_width()):
@@ -71,10 +69,6 @@ def flappygame():
                     bird_velocity_y = bird_flap_velocity
                     bird_flapped = True
 
-        game_over = isGameOver(horizontal, vertical, up_pipes, down_pipes)
-        if game_over:
-            return
-
         # Update bird's vertical position
         if bird_velocity_y < bird_Max_Vel_Y and not bird_flapped:
             bird_velocity_y += birdAccY
@@ -84,6 +78,14 @@ def flappygame():
 
         # Update bird's horizontal position
         horizontal += bird_velocity_x
+
+        # Check if the bird hits the left or right wall
+        if horizontal <= 0:  # Left wall collision
+            horizontal = 0
+            bird_velocity_x = -bird_velocity_x
+        elif horizontal + game_images['flappybird'].get_width() >= window_width:  # Right wall collision
+            horizontal = window_width - game_images['flappybird'].get_width()
+            bird_velocity_x = -bird_velocity_x
 
         # Reset pipes every 5 seconds
         time_since_pipe_update += framepersecond_clock.tick(framepersecond) / 1000.0
@@ -102,7 +104,6 @@ def flappygame():
 
         window.blit(game_images['sea_level'], (0, elevation))
         window.blit(game_images['flappybird'], (horizontal, vertical))
-        
 
         pygame.display.update()
 
