@@ -29,8 +29,11 @@ def createPipe():
 
 def isGameOver(horizontal, vertical, up_pipes, down_pipes):
     """Check game over conditions."""
-    if vertical > elevation - 25 or vertical < 0:  # Bird hits top or bottom
+    # Bird hits the ground
+    if vertical >= elevation - game_images['flappybird'].get_height():
         return True
+
+    # Bird hits a pipe
     for pipe in up_pipes:
         if (vertical < game_images['pipeimage'][0].get_height() + pipe['y'] and
                 abs(horizontal - pipe['x']) < game_images['pipeimage'][0].get_width()):
@@ -39,6 +42,7 @@ def isGameOver(horizontal, vertical, up_pipes, down_pipes):
         if (vertical + game_images['flappybird'].get_height() > pipe['y'] and
                 abs(horizontal - pipe['x']) < game_images['pipeimage'][0].get_width()):
             return True
+
     return False
 
 def flappygame():
@@ -87,6 +91,11 @@ def flappygame():
             horizontal = window_width - game_images['flappybird'].get_width()
             bird_velocity_x = -bird_velocity_x
 
+        # Check game over conditions
+        if isGameOver(horizontal, vertical, up_pipes, down_pipes):
+            print("Game Over!")
+            return
+
         # Reset pipes every 5 seconds
         time_since_pipe_update += framepersecond_clock.tick(framepersecond) / 1000.0
         if time_since_pipe_update >= 5:
@@ -105,6 +114,14 @@ def flappygame():
         window.blit(game_images['sea_level'], (0, elevation))
         window.blit(game_images['flappybird'], (horizontal, vertical))
 
+        # Display score
+        numbers = [int(x) for x in list(str(your_score))]
+        width = sum(game_images['scoreimages'][num].get_width() for num in numbers)
+        Xoffset = (window_width - width) / 1.1
+        for num in numbers:
+            window.blit(game_images['scoreimages'][num], (Xoffset, window_width * 0.02))
+            Xoffset += game_images['scoreimages'][num].get_width()
+
         pygame.display.update()
 
 # Main program
@@ -113,6 +130,18 @@ if __name__ == "__main__":
     framepersecond_clock = pygame.time.Clock()
     pygame.display.set_caption('Flappy Bird Game')
 
+    game_images['scoreimages'] = (
+        pygame.image.load('images/0.png').convert_alpha(),
+        pygame.image.load('images/1.png').convert_alpha(),
+        pygame.image.load('images/2.png').convert_alpha(),
+        pygame.image.load('images/3.png').convert_alpha(),
+        pygame.image.load('images/4.png').convert_alpha(),
+        pygame.image.load('images/5.png').convert_alpha(),
+        pygame.image.load('images/6.png').convert_alpha(),
+        pygame.image.load('images/7.png').convert_alpha(),
+        pygame.image.load('images/8.png').convert_alpha(),
+        pygame.image.load('images/9.png').convert_alpha()
+    )
     game_images['flappybird'] = pygame.image.load(birdplayer_image).convert_alpha()
     game_images['sea_level'] = pygame.image.load(sealevel_image).convert_alpha()
     game_images['background'] = pygame.image.load(background_image).convert_alpha()
