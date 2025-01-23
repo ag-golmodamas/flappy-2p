@@ -52,18 +52,18 @@ def flappygame():
     score_p1 = 0
     score_p2 = 0
 
-    # Bird 1 (Player 1) initial settings
-    horizontal_p1 = int(window_width / 5)
+    # Bird 1 (Player 1) starts from the left wall
+    horizontal_p1 = 0
     vertical_p1 = int(window_width / 2)
     bird_velocity_x_p1 = 2
     bird_velocity_y_p1 = -9
     bird_flap_velocity_p1 = -8
     bird_flapped_p1 = False
 
-    # Bird 2 (Player 2) initial settings
-    horizontal_p2 = int(window_width / 5) + 50
+    # Bird 2 (Player 2) starts from the right wall
+    horizontal_p2 = window_width - game_images['flappybird2'].get_width()
     vertical_p2 = int(window_width / 2)
-    bird_velocity_x_p2 = 2
+    bird_velocity_x_p2 = -2  # Starts moving left
     bird_velocity_y_p2 = -9
     bird_flap_velocity_p2 = -8
     bird_flapped_p2 = False
@@ -106,17 +106,17 @@ def flappygame():
         horizontal_p2 += bird_velocity_x_p2
 
         # Handle wall collisions
-        if horizontal_p1 <= 0:
+        if horizontal_p1 <= 0:  # Bird 1 hits left wall
             horizontal_p1 = 0
             bird_velocity_x_p1 = -bird_velocity_x_p1
-        elif horizontal_p1 + game_images['flappybird1'].get_width() >= window_width:
+        elif horizontal_p1 + game_images['flappybird1'].get_width() >= window_width:  # Bird 1 hits right wall
             horizontal_p1 = window_width - game_images['flappybird1'].get_width()
             bird_velocity_x_p1 = -bird_velocity_x_p1
 
-        if horizontal_p2 <= 0:
+        if horizontal_p2 <= 0:  # Bird 2 hits left wall
             horizontal_p2 = 0
             bird_velocity_x_p2 = -bird_velocity_x_p2
-        elif horizontal_p2 + game_images['flappybird2'].get_width() >= window_width:
+        elif horizontal_p2 + game_images['flappybird2'].get_width() >= window_width:  # Bird 2 hits right wall
             horizontal_p2 = window_width - game_images['flappybird2'].get_width()
             bird_velocity_x_p2 = -bird_velocity_x_p2
 
