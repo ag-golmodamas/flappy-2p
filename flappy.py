@@ -15,12 +15,13 @@ game_images = {}
 framepersecond = 32
 pipeimage = 'images/bamboo.png'
 background_image = 'images/sky.png'
+start_image = 'images/start_background.png'
 birdplayer_image1 = 'images/bird1.png'  # Bird 1 image
 birdplayer_image2 = 'images/bird2.png'  # Bird 2 image
 sealevel_image = 'images/base.jpg'
 
 def createPipes():
-    """Creates 4 pipes with random horizontal and vertical positions."""
+    """Creates pipes with random horizontal and vertical positions."""
     offset = window_height / 2.5
     pipeHeight = game_images['pipeimage'][0].get_height()
     pipes = []
@@ -67,8 +68,9 @@ def isGameOver(horizontal, vertical, pipes):
             return True
 
     return False
+
 def flappygame():
-    """Main game loop for 2 players with Game Over and Restart logic."""
+    """Main game loop"""
     global high_score_p1, high_score_p2  # Use global high scores
     score_p1 = 0
     score_p2 = 0
@@ -100,8 +102,11 @@ def flappygame():
                 pygame.quit()
                 sys.exit()
 
-            if game_over:  # If game over, wait for SPACE to restart
-                if event.type == KEYDOWN and event.key == K_SPACE:
+            if event.type == KEYDOWN and event.key == K_r:
+                start()
+            
+            if game_over:  # If game over, wait for button to restart
+                if event.type == KEYDOWN:
                     flappygame()  # Restart the game
                 continue
 
@@ -172,16 +177,10 @@ def flappygame():
                 print("Player 1 Wins")
                 winner = "Player 1 Wins"
 
-            # Display "Game Over" message
-            font_large = pygame.font.Font(None, 72)
-            font_medium = pygame.font.Font(None, 48)
-            font_small = pygame.font.Font(None, 36)
-
             game_over_surface = font_medium.render("GAME OVER", True, (255, 128, 0))
             win_surface = font_large.render(winner, True, (255, 0, 0))
-            restart_surface = font_small.render("Press SPACE to Restart", True, (255, 255, 255))
+            restart_surface = font_small.render("Press button to Restart", True, (255, 255, 255))
 
-            # Center the text on the screen
             game_over_rect = game_over_surface.get_rect(center=(window_width / 2, window_height / 5))
             win_rect = win_surface.get_rect(center=(window_width - 300, window_height - 300))
             restart_rect = restart_surface.get_rect(center=(window_width / 2, window_height - 175))
@@ -239,6 +238,39 @@ def flappygame():
 
         pygame.display.update()
 
+def start():
+    window.blit(game_images['start_image'], (0, 0))
+    window.blit(game_images['sea_level'], (0, elevation))
+
+    game_images['flappybird1'] = pygame.image.load(birdplayer_image1).convert_alpha()
+    game_images['flappybird2'] = pygame.image.load(birdplayer_image2).convert_alpha()
+    window.blit(game_images['flappybird1'], (40, 435))
+    window.blit(game_images['flappybird2'], (505, 437.5))
+    
+    title_surface = font_large.render("Flappy Bird 2P", True, (255, 255, 255))
+    title_rect = title_surface.get_rect(center=(window_width / 2, window_height / 2))
+    window.blit(title_surface, title_rect)
+
+    start_surface = font_medium.render("Press button to start", True, (255, 255, 255))
+    start_rect = start_surface.get_rect(center=(window_width / 2, window_height - 50))
+    window.blit(start_surface, start_rect)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                pygame.quit()
+                sys.exit()
+            if event.type == KEYDOWN:
+                while True:
+                    flappygame()
+                    if event.type == KEYDOWN and event.key == K_r:
+                        pygame.quit()
+                        sys.exit
+
+    
+  
 # Main program
 if __name__ == "__main__":
     pygame.init()
@@ -249,14 +281,19 @@ if __name__ == "__main__":
     game_images['flappybird2'] = pygame.image.load(birdplayer_image2).convert_alpha()
     game_images['sea_level'] = pygame.image.load(sealevel_image).convert_alpha()
     game_images['background'] = pygame.image.load(background_image).convert_alpha()
+    game_images['start_image'] = pygame.image.load(start_image).convert_alpha()
     game_images['pipeimage'] = (
         pygame.transform.rotate(pygame.image.load(pipeimage).convert_alpha(), 180),
         pygame.image.load(pipeimage).convert_alpha()
     )
 
-    print("WELCOME TO FLAPPY BIRD - 2 PLAYERS")
+    # Initialize fonts
+    font_large = pygame.font.Font(None, 72)
+    font_medium = pygame.font.Font(None, 48)
+    font_small = pygame.font.Font(None, 36)
+
+    print("FLAPPY BIRD - 2 PLAYERS")
     print("Player 1: SPACE to flap | Player 2: W to flap")
     print("Press SPACE or W to start!")
 
-    while True:
-        flappygame()
+    start()
