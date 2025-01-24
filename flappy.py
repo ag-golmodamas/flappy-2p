@@ -139,16 +139,20 @@ def flappygame():
         if horizontal_p1 <= 0:  # Bird 1 hits left wall
             horizontal_p1 = 0
             bird_velocity_x_p1 = -bird_velocity_x_p1
+            game_images['flappybird1'] = pygame.image.load('images/bird1.png').convert_alpha()
         elif horizontal_p1 + game_images['flappybird1'].get_width() >= window_width:  # Bird 1 hits right wall
             horizontal_p1 = window_width - game_images['flappybird1'].get_width()
             bird_velocity_x_p1 = -bird_velocity_x_p1
+            game_images['flappybird1'] = pygame.image.load('images/bird1-flipped.png').convert_alpha()
 
         if horizontal_p2 <= 0:  # Bird 2 hits left wall
             horizontal_p2 = 0
             bird_velocity_x_p2 = -bird_velocity_x_p2
+            game_images['flappybird2'] = pygame.image.load('images/bird2-flipped.png').convert_alpha()
         elif horizontal_p2 + game_images['flappybird2'].get_width() >= window_width:  # Bird 2 hits right wall
             horizontal_p2 = window_width - game_images['flappybird2'].get_width()
             bird_velocity_x_p2 = -bird_velocity_x_p2
+            game_images['flappybird2'] = pygame.image.load('images/bird2.png').convert_alpha()
 
         # Check game over conditions
         if isGameOver(horizontal_p1, vertical_p1, pipes) or isGameOver(horizontal_p2, vertical_p2, pipes):
@@ -187,6 +191,10 @@ def flappygame():
             window.blit(restart_surface, restart_rect)
             
             pygame.display.update()
+
+            # Reset bird images
+            game_images['flappybird1'] = pygame.image.load('images/bird1.png').convert_alpha()
+            game_images['flappybird2'] = pygame.image.load('images/bird2.png').convert_alpha()
             continue
 
         # Increment scores for passing pipes
