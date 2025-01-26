@@ -106,7 +106,7 @@ def flappygame():
                 start()
             
             if game_over:  # If game over, wait for button to restart
-                if event.type == KEYDOWN:
+                if event.type == KEYDOWN and event.key == K_SPACE:
                     flappygame()  # Restart the game
                 continue
 
@@ -262,12 +262,9 @@ def start():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 sys.exit()
-            if event.type == KEYDOWN:
+            if event.type == KEYDOWN and event.key == K_SPACE:
                 while True:
                     flappygame()
-                    if event.type == KEYDOWN and event.key == K_r:
-                        pygame.quit()
-                        sys.exit
 
     
   
