@@ -30,7 +30,7 @@ def createPipes():
 
     x_position = window_width / 10  # Starting x-position
 
-    for i in range(3):  # Create 4 pipes
+    for i in range(3):  # Create 3 pipes
         y2 = offset + random.randrange(0, int(window_height - game_images['sea_level'].get_height() - 1.2 * offset))
         y1 = pipeHeight - y2 + offset
 
@@ -113,13 +113,21 @@ def flappygame():
             # Normal gameplay inputs
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:  # Player 1 controls
-                    if vertical_p1 > 0:
-                        bird_velocity_y_p1 = bird_flap_velocity_p1
-                        bird_flapped_p1 = True
+                    bird_velocity_y_p1 = bird_flap_velocity_p1
+                    bird_flapped_p1 = True
                 if event.key == K_w:  # Player 2 controls
-                    if vertical_p2 > 0:
-                        bird_velocity_y_p2 = bird_flap_velocity_p2
-                        bird_flapped_p2 = True
+                    bird_velocity_y_p2 = bird_flap_velocity_p2
+                    bird_flapped_p2 = True
+
+            # Left-right inputs
+            if event.type == MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if(pos[0] < window_width / 2):
+                    bird_velocity_y_p1 = bird_flap_velocity_p1
+                    bird_flapped_p1 = True
+                else:
+                    bird_velocity_y_p2 = bird_flap_velocity_p2
+                    bird_flapped_p2 = True
 
         if game_over:  # Skip game updates if game is over
             continue
@@ -263,7 +271,6 @@ def start():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_SPACE:
-                while True:
                     flappygame()
 
     
